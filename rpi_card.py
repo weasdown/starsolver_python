@@ -1,6 +1,10 @@
 # Deck of cards
 # https://projects.raspberrypi.org/en/projects/deck-of-cards
 
+numbers = [str(n) for n in range(2, 11)] + ["J", "Q", "K", "A"]
+suits = ["spades", "hearts", "diamonds", "clubs"]
+
+
 # Create a class
 class Card:
     def __init__(self, suit, number):
@@ -16,7 +20,7 @@ class Card:
 
     @suit.setter  # create a setter
     def suit(self, suit):
-        if suit in ["spades", "hearts", "diamonds", "clubs"]:
+        if suit in suits:
             self._suit = suit
         else:
             print("That's not a valid suit name!")
@@ -28,7 +32,7 @@ class Card:
 
     @number.setter
     def number(self, number):
-        if number in ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]:
+        if number in numbers:
             self._number = number
         else:
             print("That's not a valid number!")
