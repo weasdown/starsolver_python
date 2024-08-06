@@ -66,3 +66,6 @@ The flow of a solve attempt starts with initial setup of the various board class
 2. Check for special shapes and set is_special attribute in Shape if special.
 3. TBC
 
+### Methods loop
+- As the program runs through the methods loop, it may jump to other methods as appropriate, e.g. if it stars a cell it will run the method to dot adjacent cells. This may be implemented as a method stack that gets updated as the program runs (**TBC**).
+- If the program completes the loop without progress, it **must** declare "Puzzle cannot be solved with current algorithms" or similar to avoid an infinite loop.
