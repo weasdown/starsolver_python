@@ -6,5 +6,5 @@ class Cell:
         self.row = self.coords[0]
         self.column = self.coords[1]
 
-        self.status = NotImplementedError  # empty, dotted or starred
+        self.status = ...  # TODO empty, dotted or starred
 
