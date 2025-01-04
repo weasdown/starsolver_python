@@ -37,3 +37,7 @@ class Cell:
         """Dot all the Cells adjacent to this Cell."""
         for cell in self.adjacents:
             cell.dot()
+
+    def star(self):
+        self.status = CellStatus.star
+    
