@@ -1,5 +1,6 @@
 # Cell library
 
+from dataclasses import dataclass
 from enum import Enum
 
 class CellStatus(Enum):
@@ -9,10 +10,16 @@ class CellStatus(Enum):
     star = 2
 
 
+@dataclass
+class Coordinate:
+    x: int
+    y: int
+
+
 class Cell:
-    def __init__(self, coords: tuple, status: CellStatus = CellStatus.blank):
+    def __init__(self, coord: Coordinate, status: CellStatus = CellStatus.blank):
         """A single cell in a board."""
-        self.coords = coords
+        self.coord: Coordinate = coord
         self.row_index: int = self.coords[0]
         self.column_index: int = self.coords[1]
 
@@ -43,4 +50,3 @@ class Cell:
 
     def star(self):
         self.status = CellStatus.star
-    
