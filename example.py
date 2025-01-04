@@ -4,4 +4,4 @@ import starsolver as s
 
 board = s.Board()
 
-print(board.num_stars)
+print(f'{board.num_stars = }')
