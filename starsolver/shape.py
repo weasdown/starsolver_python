@@ -1,6 +1,6 @@
 # Shape class
 
-from cell import Cell
+from starsolver.cell import Cell
 
 class Shape:
     def __init__(self, cells: list[Cell]):
