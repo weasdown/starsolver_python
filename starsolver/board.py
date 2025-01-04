@@ -3,11 +3,13 @@
 from cell import Cell
 from shape import Shape
 
+import numpy as np
+
 class Board:
     def __init__(self):
         """A 9x9 board in which a puzzle takes place."""
-        self.rows: list[Row] = ...  # TODO implement rows
-        self.columns: list[Column] = ...  # TODO implement columns
+        self.rows: np.ndarray[Cell] = ...  # TODO implement rows
+        self.columns: np.ndarray[Cell] = ...  # TODO implement columns
 
         self.shapes: list[Shape] = ...  # TODO implement shapes
 
@@ -23,5 +25,6 @@ class Board:
 
 
 """Type definitions to be used for rows and columns in Board."""
-type Column = list[Cell]
-type Row = list[Cell]
+# TODO convert to numpy arrays
+type Column = np.ndarray[Cell]
+type Row = np.ndarray[Cell]
