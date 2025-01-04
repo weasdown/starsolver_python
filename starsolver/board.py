@@ -5,7 +5,7 @@ from shape import Shape
 
 class Board:
     def __init__(self):
-        pass
+        """A 9x9 board in which a puzzle takes place."""
         self.rows: list[Row] = ...  # TODO implement rows
         self.columns: list[Column] = ...  # TODO implement columns
 
