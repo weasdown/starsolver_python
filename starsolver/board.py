@@ -11,6 +11,16 @@ class Board:
 
         self.shapes: list[Shape] = ...  # TODO implement shapes
 
+    @property
+    def is_complete(self) -> bool:
+        """Gets whether the Board has been completed and is valid."""
+        raise NotImplementedError
+    
+    @property
+    def is_valid(self) -> bool:
+        """Gets whether the Board is valid."""
+        raise NotImplementedError
+
 
 """Type definitions to be used for rows and columns in Board."""
 type Column = list[Cell]
