@@ -2,6 +2,5 @@
 
 from .board import *
 from .cell import *
-from .main import *
 from .shape import *
 from .solver import *
