@@ -31,17 +31,9 @@ class Cell:
                 (_coord[0], _coord[1] - 1)]
 
     def dot(self):
-            # if not isinstance(_coord, tuple):
-            #     raise SyntaxError('coord must be a tuple')
-            print(f'Dotting cell {self.coords}...')
-            
-            adjacents: list[Cell] = self.adjacents()
-            for cell in adjacents:
-                print(f"'Dotted' {cell} NOT REALLY!!")
+        self.status = CellStatus.dot
 
-    def dot_adjacent(self,_coord: tuple):
-        # FIXME
-        if not isinstance(_coord, tuple):
-            raise SyntaxError('coord must be a tuple')
-        else:
-            self.dot()
+    def dot_adjacents(self):
+        """Dot all the Cells adjacent to this Cell."""
+        for cell in self.adjacents:
+            cell.dot()
