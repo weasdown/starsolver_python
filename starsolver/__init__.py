@@ -3,4 +3,3 @@
 from .cell import *
 from .main import *
 from .solver import *
-from .stars_dotting import *
