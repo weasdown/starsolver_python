@@ -4,4 +4,4 @@ import starsolver as s
 
 board = s.Board()
 
-cell = s.Cell((0,0))
+print(board.num_stars)

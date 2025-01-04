@@ -13,10 +13,13 @@ class Cell:
     def __init__(self, coords: tuple, status: CellStatus = CellStatus.blank):
         """A single cell in a board."""
         self.coords = coords
-        self.row = self.coords[0]
-        self.column = self.coords[1]
+        self.row_index: int = self.coords[0]
+        self.column_index: int = self.coords[1]
 
         self.status: CellStatus = status
+
+    def __repr__(self):
+        return f'Cell({self.coords})'
 
     def adjacents(self):
         # TODO: add out of bounds check
