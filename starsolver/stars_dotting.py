@@ -25,6 +25,7 @@ def dot_adjacent(_coord: tuple):
     else:
         dot_cell(_coord)
 
-
-coord = (0, 0)
-dot_adjacent(coord)
+# TODO remove
+if __name__ == '__main__':
+    coord = (0, 0)
+    dot_adjacent(coord)
