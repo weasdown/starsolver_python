@@ -9,3 +9,8 @@ class Shape:
         self.cells: list[Cell] = cells
 
         raise NotImplementedError
+
+    @property
+    def is_special(self) -> bool:
+        raise NotImplementedError
+    
