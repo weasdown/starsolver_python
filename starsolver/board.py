@@ -16,6 +16,8 @@ class Board:
 
         self.shapes: list[Shape] = ...  # TODO implement shapes
 
+        self.cells: list[Cell] = [cell for cell in (row for row in self.rows)]
+
     @property
     def is_complete(self) -> bool:
         """Gets whether the Board has been completed and is valid."""
