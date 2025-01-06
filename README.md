@@ -14,3 +14,6 @@ A Python solver for "Star Battle"/"Two Not Touch" puzzles. Valid only for a 9x9 
         a. shape
         b. row
         c. column
+
+# Theory
+One way I could represent the different rows, columns and shapes of a board is with an [intersection graph](https://en.wikipedia.org/wiki/Intersection_graph), or, perhaps, a more specific [interval graph](https://en.wikipedia.org/wiki/Interval_graph).
