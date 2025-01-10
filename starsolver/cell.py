@@ -64,7 +64,6 @@ class Cell:
         self.column_index: int = self.coord.y
 
         self.status: CellStatus = status
-        self.status_symbol: str = status.__repr__()
 
     def __repr__(self) -> str:
         return f'Cell{self.coord}'
@@ -99,3 +98,15 @@ class Cell:
 
     def star(self):
         self.status = CellStatus.star
+
+    @property
+    def status_symbol(self) -> str:
+        """
+        Gets the string representation of the Cell's status.
+
+        Returns:
+        - " " for blank
+        - "•" for dot
+        - "*" for star
+        """
+        return self.status.__repr__()
