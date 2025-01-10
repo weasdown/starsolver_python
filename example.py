@@ -25,7 +25,8 @@ print('\nFirst row of board:\n'
 
 
 class color:
-    """Copied from https://stackoverflow.com/questions/8924173/how-can-i-print-bold-text-in-python"""
+    """Copied from https://stackoverflow.com/questions/8924173/how-can-i-print-bold-text-in-python
+    For coloured text: https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal?noredirect=1&lq=1"""
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
     DARKCYAN = '\033[36m'
