@@ -39,6 +39,16 @@ class CellStatus(Enum):
     dot = 1
     star = 2
 
+    def __repr__(self):
+        """Returns the string representation of a CellStatus."""
+        match self.value:
+            case 0:  # blank
+                return ' '
+            case 1:  # dot
+                return '•'
+            case 2:  # star
+                return '*'
+
 
 @dataclass
 class Coordinate:
