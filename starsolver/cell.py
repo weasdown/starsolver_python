@@ -64,6 +64,7 @@ class Cell:
         self.column_index: int = self.coord.y
 
         self.status: CellStatus = status
+        self.status_symbol: str = status.__repr__()
 
     def __repr__(self) -> str:
         return f'Cell{self.coord}'
