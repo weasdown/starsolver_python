@@ -12,8 +12,8 @@ class Board:
 
     def __init__(self, shapes: list[dict[str, list[c.Coordinate] | int]] = None):
         """A 9x9 board in which a puzzle takes place."""
-        self.rows: list[Row] = [Row(index) for index in range(self.dimension)]
-        self.columns: list[Column] = [Column(index) for index in range(self.dimension)]
+        self.rows: list[cg.Row] = [cg.Row(index) for index in range(self.dimension)]
+        self.columns: list[cg.Column] = [cg.Column(index) for index in range(self.dimension)]
 
         """A list of all the Rows in the Board."""
         self.rows: list[cg.Row] = [cg.Row(index) for index in range(Board.dimension)]
@@ -68,31 +68,3 @@ class Board:
         """Gets how many stars are in the Board."""
         starred_cells: list[c.Cell] = [cell for cell in self.cells if cell.status == c.CellStatus.star]
         return len(starred_cells)
-
-
-class Column:
-    def __init__(self, index: int):
-        self.index: int = index
-
-        self.cells: list[c.Cell] = [c.Cell(c.Coordinate(self.index, vert_index))
-                                    for vert_index in range(Board.dimension)]
-
-    def __getitem__(self, index: int) -> c.Cell:
-        return self.cells[index]
-
-    def __repr__(self):
-        return f'Column({self.index})'
-
-
-class Row:
-    def __init__(self, index: int):
-        self.index: int = index
-
-        self.cells: list[c.Cell] = [c.Cell(c.Coordinate(horiz_index, self.index)) for horiz_index in
-                                    range(Board.dimension)]
-
-    def __getitem__(self, index: int) -> c.Cell:
-        return self.cells[index]
-
-    def __repr__(self):
-        return f'Row({self.index})'
