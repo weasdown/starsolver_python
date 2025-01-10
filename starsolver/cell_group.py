@@ -38,3 +38,7 @@ class Row(LinearCellGroup):
 
     def __repr__(self):
         return f'Row({self.index})'
+
+    def board_print(self):
+        cell_strings: list[str] = [f'|{cell.status_symbol}' for cell in self.cells]
+        return ''.join(cell_strings) + '|'
