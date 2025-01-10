@@ -30,6 +30,11 @@ class Board:
     def __getitem__(self, index: int):
         return self.rows[index]
 
+    def __repr__(self):
+        """Returns the string representation of this Board."""
+        row_strings: list[str] = [row.board_print() for row in self.rows]
+        return '\n'.join(row_strings)
+
     @staticmethod
     def build_shapes(shapes: list[dict[str, list[c.Coordinate] | int]]):
         if shapes is None:
