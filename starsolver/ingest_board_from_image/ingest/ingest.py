@@ -57,16 +57,6 @@ def image_edges(image: np.ndarray) -> np.ndarray:
 
     final_image = board_only.__invert__()
 
-    cv2.imshow('Threshold', resize_with_aspect_ratio(final_image, height=800))
-
-    cv2.waitKey(0)  # wait for any key to be pressed
-    cv2.destroyAllWindows()
-
-    # _, mask = cv2.threshold(board_only, np.mean(board_only, dtype=int), 1, cv2.THRESH_BINARY)
-    # # mask = cv2.threshold(board_only, 10, 255, cv2.THRESH_BINARY)
-    # final_image = cv2.bitwise_and(image, image, mask=mask)
-    # print(final_image.shape)
-
     return final_image
 
 
@@ -110,13 +100,11 @@ def ingest(image_path: str) -> s.Board:
 
     edges: np.ndarray = image_edges(original)
 
-    # cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
-    # cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
-    #
-    # # We know that the thick black border around the board means its edge is detected as a double line.
-    #
-    # cv2.waitKey(0)  # wait for any key to be pressed
-    # cv2.destroyAllWindows()
+    cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
+    cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
+
+    cv2.waitKey(0)  # wait for any key to be pressed
+    cv2.destroyAllWindows()
 
     b: s.Board = s.Board()
     return b
