@@ -55,7 +55,7 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     # Remove rows below board bottom edge
     board_only: np.ndarray = np.array([row for row in trimmed_right if row[0] == threshold_max])
 
-    final_image = board_only
+    final_image = board_only.__invert__()
 
     cv2.imshow('Threshold', resize_with_aspect_ratio(final_image, height=800))
 
