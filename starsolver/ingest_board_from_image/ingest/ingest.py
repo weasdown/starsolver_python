@@ -10,14 +10,14 @@ def trim_rows(image: np.ndarray, num_rows: int, from_top: bool = True) -> np.nda
     if from_top:
         return image[num_rows: -1]  # trim top
     else:
-        return image[0: -num_rows]
+        return image[0: -num_rows + 1]
 
 
 def trim_columns(image: np.ndarray, num_columns: int, from_left: bool = True):
     if from_left:
         return np.delete(image, slice(num_columns), axis=1)
     else:
-        return np.delete(image, slice(-num_columns, None), axis=1)
+        return np.delete(image, slice(-num_columns - 1, None), axis=1)
 
 
 def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
@@ -110,12 +110,14 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
 def board_from_image(board_image: np.ndarray) -> s.Board:
     print('Building a Board instance from board_image')
 
+    print(board_image[0])
+
     # Trim the black border around the board
     border_thickness: int = 20  # TODO calculate exact value
-    board_image = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
-    board_image = trim_columns(trim_columns(board_image, border_thickness), border_thickness, False)
+    trim_top_bottom = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
+    no_border = trim_columns(trim_columns(trim_top_bottom, border_thickness), border_thickness, False)
 
-    cv2.imshow('Border removed', resize_with_aspect_ratio(board_image, height=600))
+    # cv2.imshow('Border removed', resize_with_aspect_ratio(no_border, height=600))
 
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
