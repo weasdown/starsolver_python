@@ -19,8 +19,9 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     # Convert the frame to grayscale for edge detection
     grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Apply Gaussian blur to reduce noise and smoothen edges
-    blurred = cv2.GaussianBlur(src=grey, ksize=(3, 5), sigmaX=0.5)
+    # # TODO remove Gaussian blur if not needed
+    # # Apply Gaussian blur to reduce noise and smoothen edges
+    # blurred = cv2.GaussianBlur(src=grey, ksize=(3, 5), sigmaX=0.5)
 
     # Perform Canny edge detection
     edges = cv2.Canny(grey, 70, 135)
