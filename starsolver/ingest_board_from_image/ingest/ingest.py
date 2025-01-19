@@ -72,6 +72,8 @@ def ingest(image_path: str) -> s.Board:
     cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
     cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
     cv2.waitKey(0)
+
+    cv2.waitKey(0)  # wait for any key to be pressed
     cv2.destroyAllWindows()
 
     b: s.Board = s.Board()
