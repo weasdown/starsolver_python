@@ -113,6 +113,9 @@ def board_from_image(board_image: np.ndarray) -> s.Board:
     # Trim the black border around the board
     border_thickness: int = 20  # TODO calculate exact value
     board_image = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
+    board_image = trim_columns(trim_columns(board_image, border_thickness), border_thickness, False)
+
+    cv2.imshow('Border removed', resize_with_aspect_ratio(board_image, height=600))
 
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
