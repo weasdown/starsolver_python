@@ -135,6 +135,10 @@ def board_from_image(board_image: np.ndarray) -> s.Board:
     print(f'\n{cell_colours = }')
     print(f'num colours: {len(cell_colours)}')
 
+    cells: np.ndarray = np.empty((9, 9), dtype=s.Cell)
+    for y in range(9):
+        cells[y] = [s.Cell(s.Coordinate(x, y)) for x in range(9)]
+
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
     b: s.Board = s.Board()
