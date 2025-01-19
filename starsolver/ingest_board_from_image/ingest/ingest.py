@@ -108,6 +108,8 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
 
 
 def board_from_image(board_image: np.ndarray) -> s.Board:
+    print('Building a Board instance from board_image')
+
     # Trim the black border around the board
     border_thickness: int = 20  # TODO calculate exact value
     board_image = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
@@ -135,8 +137,9 @@ def ingest(image_path: str) -> s.Board:
 
     cv2.imshow('Board', resize_with_aspect_ratio(edges, height=600))
 
+    b: s.Board = board_from_image(edges)
+
     cv2.waitKey(0)  # wait for any key to be pressed
     cv2.destroyAllWindows()
 
-    b: s.Board = s.Board()
     return b
