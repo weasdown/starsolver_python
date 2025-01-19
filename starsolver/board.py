@@ -12,9 +12,6 @@ class Board:
 
     def __init__(self, shapes: list[dict[str, list[c.Coordinate] | int]] = None):
         """A 9x9 board in which a puzzle takes place."""
-        self.rows: list[cg.Row] = [cg.Row(index) for index in range(self.dimension)]
-        self.columns: list[cg.Column] = [cg.Column(index) for index in range(self.dimension)]
-
         """A list of all the Rows in the Board."""
         self.rows: list[cg.Row] = [cg.Row(index) for index in range(Board.dimension)]
 

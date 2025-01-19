@@ -50,12 +50,6 @@ class CellStatus(Enum):
                 return '*'
 
 
-@dataclass
-class Coordinate:
-    x: int
-    y: int
-
-
 class Cell:
     def __init__(self, coord: Coordinate, status: CellStatus = CellStatus.blank):
         """A single cell in a board."""
