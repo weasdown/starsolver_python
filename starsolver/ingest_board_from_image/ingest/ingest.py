@@ -6,6 +6,20 @@ import numpy as np
 import starsolver as s
 
 
+def trim_rows(image: np.ndarray, num_rows: int, from_top: bool = True) -> np.ndarray:
+    if from_top:
+        return image[num_rows: -1]  # trim top
+    else:
+        return image[0: -num_rows]
+
+
+def trim_columns(image: np.ndarray, num_columns: int, from_left: bool = True):
+    if from_left:
+        return np.delete(image, slice(num_columns), axis=1)
+    else:
+        return np.delete(image, slice(-num_columns, None), axis=1)
+
+
 def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
     """
     Resize an image, maintaining its original aspect ratio.
@@ -87,10 +101,10 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
     right_edge_index = int(np.argmax(np.flip(trimmed_left, axis=1) == threshold_max)) - 1
 
     # Crop the original image to the same extent as board_only
-    board_only_colour: np.ndarray = np.delete(image, slice(left_edge_index), axis=1)  # trim left
-    board_only_colour = np.delete(board_only_colour, slice(-right_edge_index, None), axis=1)  # trim right
-    board_only_colour = board_only_colour[top_edge_index:-1]  # trim top
-    board_only_colour = board_only_colour[0: -bottom_edge_index]  # trim bottom
+    board_only_colour: np.ndarray = trim_columns(image, left_edge_index)  # trim left
+    board_only_colour = trim_columns(board_only_colour, right_edge_index, False)  # trim right
+    board_only_colour = trim_rows(board_only_colour, top_edge_index)  # trim top
+    board_only_colour = trim_rows(board_only_colour, bottom_edge_index, False)  # trim bottom
 
     return board_only_colour
 
