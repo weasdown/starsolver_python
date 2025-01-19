@@ -108,16 +108,32 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
 
 
 def board_from_image(board_image: np.ndarray) -> s.Board:
-    print('Building a Board instance from board_image')
-
-    print(board_image[0])
+    width = board_image.shape[0]
+    height = board_image.shape[1]
 
     # Trim the black border around the board
-    border_thickness: int = 20  # TODO calculate exact value
+    border_thickness: int = 8
     trim_top_bottom = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
     no_border = trim_columns(trim_columns(trim_top_bottom, border_thickness), border_thickness, False)
 
-    # cv2.imshow('Border removed', resize_with_aspect_ratio(no_border, height=600))
+    cv2.imshow('Border removed', resize_with_aspect_ratio(no_border, height=600))
+
+    # Build a set of 9 coordinates for pixels whose colour will be evaluated to get the cell's colour.
+    test_pixels = []
+    cell_colours: list[list[int]] = []
+    for row_index in range(9):
+        row_height: int = round(row_index / 9 * height + 15)
+        row_test_pixels = [[row_height, round(i / 9 * width + 15)] for i in range(9)]
+        test_pixels.append(row_test_pixels)
+
+        for pixel in row_test_pixels:
+            colour_at_pixel = [int(colour) for colour in no_border[pixel[0], pixel[1]]]
+            if colour_at_pixel not in cell_colours:
+                cell_colours.append(colour_at_pixel)
+            print(f'\t- At {pixel}: {colour_at_pixel}')
+
+    print(f'\n{cell_colours = }')
+    print(f'num colours: {len(cell_colours)}')
 
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
