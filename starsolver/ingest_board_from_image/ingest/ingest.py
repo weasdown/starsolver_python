@@ -27,6 +27,33 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     return edges
 
 
+def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
+    """
+    Resize an image, maintaining its original aspect ratio.
+
+    Based on https://stackoverflow.com/a/58126805.
+
+    :param image: The image to resize.
+    :param width: Width of the output image, in pixels.
+    :param height: Height of the output image, in pixels.
+    :param inter: The type of interpolation to use when resizing.
+    :return: The resized image.
+    """
+    dim = None
+    (h, w) = image.shape[:2]
+
+    if width is None and height is None:
+        return image
+    if width is None:
+        r = height / float(h)
+        dim = (int(w * r), height)
+    else:
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    return cv2.resize(image, dim, interpolation=inter)
+
+
 def ingest(image_path: str) -> s.Board:
     """
     Builds a Board instance from an image of a board.
@@ -40,6 +67,11 @@ def ingest(image_path: str) -> s.Board:
     original: np.ndarray = cv2.imread(image_path)
 
     edges: np.ndarray = image_edges(original)
+
+    cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
+    cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     b: s.Board = s.Board()
     return b
