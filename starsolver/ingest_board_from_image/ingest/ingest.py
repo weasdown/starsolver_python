@@ -68,8 +68,6 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
     def start_is_white(array: np.ndarray) -> bool:
         return array[0] == threshold_max
 
-    cv2.imshow('Threshold', resize_with_aspect_ratio(threshold, height=600))
-
     # Indices for the board edges, so we can later crop the original image in the same way so it just shows the board, but in colour.
     top_edge_index: int | None = None
     bottom_edge_index: int | None = None
@@ -135,8 +133,7 @@ def ingest(image_path: str) -> s.Board:
 
     edges: np.ndarray = cropped_board(original)
 
-    cv2.imshow('Original', resize_with_aspect_ratio(original, height=600))
-    cv2.imshow('Cropped board', resize_with_aspect_ratio(edges, height=600))
+    cv2.imshow('Board', resize_with_aspect_ratio(edges, height=600))
 
     cv2.waitKey(0)  # wait for any key to be pressed
     cv2.destroyAllWindows()
