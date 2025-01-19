@@ -31,7 +31,7 @@ def image_edges(image: np.ndarray) -> np.ndarray:
 
     # Remove any rows that are pure black, pure white or start with white (we assume a black border around the board).
     trimmed_top_rows = []
-    for index, row in enumerate(threshold):
+    for row in threshold:
         if not (np.array_equal(row, black_row)
                 or np.array_equal(row, white_row)
                 or start_is_white(row)):
