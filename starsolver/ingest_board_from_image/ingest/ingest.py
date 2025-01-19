@@ -6,6 +6,32 @@ import numpy as np
 import starsolver as s
 
 
+def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
+    """
+    Resize an image, maintaining its original aspect ratio.
+
+    Based on https://stackoverflow.com/a/58126805.
+
+    :param image: The image to resize.
+    :param width: Width of the output image, in pixels.
+    :param height: Height of the output image, in pixels.
+    :param inter: The type of interpolation to use when resizing.
+    :return: The resized image.
+    """
+    (h, w) = image.shape[:2]
+
+    if width is None and height is None:
+        return image
+    if width is None:
+        r = height / float(h)
+        dim = (int(w * r), height)
+    else:
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    return cv2.resize(image, dim, interpolation=inter)
+
+
 def cropped_board(image: np.ndarray) -> np.ndarray:
     """
     Returns an image of the edges in an original image.
@@ -67,32 +93,6 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
     board_only_colour = board_only_colour[0: -bottom_edge_index]  # trim bottom
 
     return board_only_colour
-
-
-def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
-    """
-    Resize an image, maintaining its original aspect ratio.
-
-    Based on https://stackoverflow.com/a/58126805.
-
-    :param image: The image to resize.
-    :param width: Width of the output image, in pixels.
-    :param height: Height of the output image, in pixels.
-    :param inter: The type of interpolation to use when resizing.
-    :return: The resized image.
-    """
-    (h, w) = image.shape[:2]
-
-    if width is None and height is None:
-        return image
-    if width is None:
-        r = height / float(h)
-        dim = (int(w * r), height)
-    else:
-        r = width / float(w)
-        dim = (width, int(h * r))
-
-    return cv2.resize(image, dim, interpolation=inter)
 
 
 def ingest(image_path: str) -> s.Board:
