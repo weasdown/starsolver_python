@@ -10,7 +10,7 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     """
     Returns an image of the edges in an original image.
 
-    Based on https://www.geeksforgeeks.org/real-time-edge-detection-using-opencv-python/.
+    Based on https://www.geeksforgeeks.org/real-time-edge-detection-using-opencv-python/ and https://www.youtube.com/watch?v=f6VgWTD_7kc.
 
     :param image:
     :return:
@@ -19,13 +19,55 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     # Convert the frame to grayscale for edge detection
     grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # # TODO remove Gaussian blur if not needed
-    # # Apply Gaussian blur to reduce noise and smoothen edges
-    # blurred = cv2.GaussianBlur(src=grey, ksize=(3, 5), sigmaX=0.5)
+    threshold_max: int = 255
+    _, threshold = cv2.threshold(grey, np.mean(grey, dtype=int), threshold_max, cv2.THRESH_BINARY)
+    threshold = threshold.__invert__()
 
-    # Perform Canny edge detection
-    edges = cv2.Canny(grey, 70, 135)
-    return edges
+    black_row: np.ndarray = np.zeros(shape=(image.shape[1]))
+    white_row: np.ndarray = np.full(shape=(image.shape[1]), fill_value=threshold_max)
+
+    def start_is_white(array: np.ndarray) -> bool:
+        return array[0] == threshold_max
+
+    # Remove any rows that are pure black, pure white or start with white (we assume a black border around the board).
+    trimmed_top_rows = []
+    for index, row in enumerate(threshold):
+        if not (np.array_equal(row, black_row)
+                or np.array_equal(row, white_row)
+                or start_is_white(row)):
+            trimmed_top_rows.append(row)
+
+    image_num_rows: int = len(image)
+
+    trimmed_top: np.ndarray = np.array(trimmed_top_rows)
+
+    # We know that the top row of trimmed_top has white at the left and right edges of the board, so use this to get the pixel indices for the left and right edges.
+    first_row: np.ndarray = trimmed_top[0]
+
+    # Remove the left black border
+    left_edge_index = np.argmax(first_row > 0)
+    trimmed_left = np.delete(trimmed_top, slice(left_edge_index), axis=1)
+
+    # Remove the right black border
+    right_edge_index = np.argmax(np.flip(trimmed_left, axis=1) == threshold_max)
+    trimmed_right = np.delete(trimmed_left, slice(-right_edge_index, None), axis=1)
+
+    # Remove rows below board bottom edge
+    board_only: np.ndarray = np.array([row for row in trimmed_right if row[0] == threshold_max])
+
+    final_image = board_only
+
+    cv2.imshow('Threshold', resize_with_aspect_ratio(final_image, height=800))
+
+    cv2.waitKey(0)  # wait for any key to be pressed
+    cv2.destroyAllWindows()
+
+    # _, mask = cv2.threshold(board_only, np.mean(board_only, dtype=int), 1, cv2.THRESH_BINARY)
+    # # mask = cv2.threshold(board_only, 10, 255, cv2.THRESH_BINARY)
+    # final_image = cv2.bitwise_and(image, image, mask=mask)
+    # print(final_image.shape)
+
+    return final_image
 
 
 def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
@@ -40,7 +82,6 @@ def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: flo
     :param inter: The type of interpolation to use when resizing.
     :return: The resized image.
     """
-    dim = None
     (h, w) = image.shape[:2]
 
     if width is None and height is None:
@@ -69,12 +110,13 @@ def ingest(image_path: str) -> s.Board:
 
     edges: np.ndarray = image_edges(original)
 
-    cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
-    cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
-    cv2.waitKey(0)
-
-    cv2.waitKey(0)  # wait for any key to be pressed
-    cv2.destroyAllWindows()
+    # cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
+    # cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
+    #
+    # # We know that the thick black border around the board means its edge is detected as a double line.
+    #
+    # cv2.waitKey(0)  # wait for any key to be pressed
+    # cv2.destroyAllWindows()
 
     b: s.Board = s.Board()
     return b
