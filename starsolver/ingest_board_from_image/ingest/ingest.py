@@ -10,14 +10,14 @@ def trim_rows(image: np.ndarray, num_rows: int, from_top: bool = True) -> np.nda
     if from_top:
         return image[num_rows: -1]  # trim top
     else:
-        return image[0: -num_rows + 1]
+        return image[0: -num_rows]
 
 
 def trim_columns(image: np.ndarray, num_columns: int, from_left: bool = True):
     if from_left:
         return np.delete(image, slice(num_columns), axis=1)
     else:
-        return np.delete(image, slice(-num_columns - 1, None), axis=1)
+        return np.delete(image, slice(-num_columns, None), axis=1)
 
 
 def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
@@ -78,13 +78,13 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
         if not (start_is_white(row) or np.array_equal(row, black_row)):
             trimmed_top_and_bottom_rows.append(row)
             if top_edge_index is None:
-                top_edge_index = index
+                top_edge_index = index + 1
         else:
             # To see if we should save the index as bottom_edge_index, see if we have found the top_edge_index.
             # If we haven't, we're still above the board.
             # If we have, and we've not set bottom_edge_index yet, the next pure black row is the first below the board.
             if (top_edge_index is not None) and (bottom_edge_index is None):
-                bottom_edge_index = len(image) - index
+                bottom_edge_index = len(image) - index - 1
 
     trimmed_top: np.ndarray = np.array(trimmed_top_and_bottom_rows)
 
@@ -92,11 +92,11 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
     first_row: np.ndarray = trimmed_top[0]
 
     # Remove the left black border
-    left_edge_index = int(np.argmax(first_row > 0))
+    left_edge_index = int(np.argmax(first_row > 0)) + 1
     trimmed_left = np.delete(trimmed_top, slice(left_edge_index), axis=1)
 
     # Remove the right black border
-    right_edge_index = int(np.argmax(np.flip(trimmed_left, axis=1) == threshold_max)) - 1
+    right_edge_index = int(np.argmax(np.flip(trimmed_left, axis=1) == threshold_max))
 
     # Crop the original image to the same extent as board_only
     board_only_colour: np.ndarray = trim_columns(image, left_edge_index)  # trim left
