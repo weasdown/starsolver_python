@@ -6,7 +6,7 @@ import numpy as np
 import starsolver as s
 
 
-def image_edges(image: np.ndarray) -> np.ndarray:
+def cropped_board(image: np.ndarray) -> np.ndarray:
     """
     Returns an image of the edges in an original image.
 
@@ -24,40 +24,49 @@ def image_edges(image: np.ndarray) -> np.ndarray:
     threshold = threshold.__invert__()
 
     black_row: np.ndarray = np.zeros(shape=(image.shape[1]))
-    white_row: np.ndarray = np.full(shape=(image.shape[1]), fill_value=threshold_max)
 
     def start_is_white(array: np.ndarray) -> bool:
         return array[0] == threshold_max
 
-    # Remove any rows that are pure black, pure white or start with white (we assume a black border around the board).
-    trimmed_top_rows = []
-    for row in threshold:
-        if not (np.array_equal(row, black_row)
-                or np.array_equal(row, white_row)
-                or start_is_white(row)):
-            trimmed_top_rows.append(row)
+    cv2.imshow('Threshold', resize_with_aspect_ratio(threshold, height=600))
 
-    image_num_rows: int = len(image)
+    # Indices for the board edges, so we can later crop the original image in the same way so it just shows the board, but in colour.
+    top_edge_index: int | None = None
+    bottom_edge_index: int | None = None
 
-    trimmed_top: np.ndarray = np.array(trimmed_top_rows)
+    # We assume the board has a black border to its left, so remove rows from the top that start with white or are pure black.
+    trimmed_top_and_bottom_rows = []
+    for index, row in enumerate(threshold):
+        if not (start_is_white(row) or np.array_equal(row, black_row)):
+            trimmed_top_and_bottom_rows.append(row)
+            if top_edge_index is None:
+                top_edge_index = index
+        else:
+            # To see if we should save the index as bottom_edge_index, see if we have found the top_edge_index.
+            # If we haven't, we're still above the board.
+            # If we have, and we've not set bottom_edge_index yet, the next pure black row is the first below the board.
+            if (top_edge_index is not None) and (bottom_edge_index is None):
+                bottom_edge_index = len(image) - index
+
+    trimmed_top: np.ndarray = np.array(trimmed_top_and_bottom_rows)
 
     # We know that the top row of trimmed_top has white at the left and right edges of the board, so use this to get the pixel indices for the left and right edges.
     first_row: np.ndarray = trimmed_top[0]
 
     # Remove the left black border
-    left_edge_index = np.argmax(first_row > 0)
+    left_edge_index = int(np.argmax(first_row > 0))
     trimmed_left = np.delete(trimmed_top, slice(left_edge_index), axis=1)
 
     # Remove the right black border
-    right_edge_index = np.argmax(np.flip(trimmed_left, axis=1) == threshold_max)
-    trimmed_right = np.delete(trimmed_left, slice(-right_edge_index, None), axis=1)
+    right_edge_index = int(np.argmax(np.flip(trimmed_left, axis=1) == threshold_max)) - 1
 
-    # Remove rows below board bottom edge
-    board_only: np.ndarray = np.array([row for row in trimmed_right if row[0] == threshold_max])
+    # Crop the original image to the same extent as board_only
+    board_only_colour: np.ndarray = np.delete(image, slice(left_edge_index), axis=1)  # trim left
+    board_only_colour = np.delete(board_only_colour, slice(-right_edge_index, None), axis=1)  # trim right
+    board_only_colour = board_only_colour[top_edge_index:-1]  # trim top
+    board_only_colour = board_only_colour[0: -bottom_edge_index]  # trim bottom
 
-    final_image = board_only.__invert__()
-
-    return final_image
+    return board_only_colour
 
 
 def resize_with_aspect_ratio(image: np.ndarray, width: float = None, height: float = None, inter: int = cv2.INTER_AREA):
@@ -98,10 +107,10 @@ def ingest(image_path: str) -> s.Board:
 
     original: np.ndarray = cv2.imread(image_path)
 
-    edges: np.ndarray = image_edges(original)
+    edges: np.ndarray = cropped_board(original)
 
-    cv2.imshow('Original', resize_with_aspect_ratio(original, height=800))
-    cv2.imshow('Edges', resize_with_aspect_ratio(edges, height=800))
+    cv2.imshow('Original', resize_with_aspect_ratio(original, height=600))
+    cv2.imshow('Cropped board', resize_with_aspect_ratio(edges, height=600))
 
     cv2.waitKey(0)  # wait for any key to be pressed
     cv2.destroyAllWindows()
