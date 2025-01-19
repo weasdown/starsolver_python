@@ -109,6 +109,18 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
     return board_only_colour
 
 
+def board_from_image(board_image: np.ndarray) -> s.Board:
+    # Trim the black border around the board
+    border_thickness: int = 20  # TODO calculate exact value
+    board_image = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
+
+    # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
+
+    b: s.Board = s.Board()
+
+    return b
+
+
 def ingest(image_path: str) -> s.Board:
     """
     Builds a Board instance from an image of a board.
