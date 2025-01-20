@@ -47,13 +47,16 @@ class Coordinate:
 
 
 class Cell:
-    def __init__(self, coord: Coordinate, status: CellStatus = CellStatus.blank):
+    def __init__(self, coord: Coordinate, status: CellStatus = CellStatus.blank,
+                 rgb_colour: tuple[int, int, int] = None):
         """A single cell in a board."""
         self.coord: Coordinate = coord
         self.row_index: int = self.coord.x
         self.column_index: int = self.coord.y
 
         self.status: CellStatus = status
+
+        self.colour: tuple[int, int, int] = rgb_colour
 
     def __repr__(self) -> str:
         return f'Cell{self.coord}'
