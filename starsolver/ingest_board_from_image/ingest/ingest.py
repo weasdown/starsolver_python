@@ -179,6 +179,10 @@ def board_from_image(board_image: np.ndarray) -> s.Board:
         test_pixels.append(row_test_pixels)
         cells.append(row_cells)
 
+    print()
+    for i in range(9):
+        print(f'Row {i}: {[cell.status.name for cell in cells[i]]}')
+
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
     b: s.Board = s.Board()
