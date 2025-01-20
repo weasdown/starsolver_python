@@ -108,36 +108,79 @@ def cropped_board(image: np.ndarray) -> np.ndarray:
 
 
 def board_from_image(board_image: np.ndarray) -> s.Board:
-    width = board_image.shape[0]
-    height = board_image.shape[1]
-
     # Trim the black border around the board
     border_thickness: int = 8
     trim_top_bottom = trim_rows(trim_rows(board_image, border_thickness), border_thickness, False)
     no_border = trim_columns(trim_columns(trim_top_bottom, border_thickness), border_thickness, False)
 
+    width = no_border.shape[0]
+
     cv2.imshow('Border removed', resize_with_aspect_ratio(no_border, height=600))
 
     # Build a set of 9 coordinates for pixels whose colour will be evaluated to get the cell's colour.
     test_pixels = []
+
+    cell_side: float = width / 9
+
+    cell_centres: list[list[tuple[int, int]]] = []
     cell_colours: list[list[int]] = []
-    for row_index in range(9):
-        row_height: int = round(row_index / 9 * height + 15)
-        row_test_pixels = [[row_height, round(i / 9 * width + 15)] for i in range(9)]
+    cells: list[list[s.Cell]] = []
+
+    dot_star_colour: list[int] = [66, 66, 66]
+
+    board_ninth = width / 9
+
+    for x_index in range(9):
+        row_cell_centres: list[tuple[int, int]] = []
+        row_test_pixels: list[tuple[int, int]] = []
+        row_cells: list[s.Cell] = []
+
+        for y_index in range(9):
+            x: int = round(board_ninth * x_index)
+            y: int = round(board_ninth * y_index)
+
+            cell_centre: tuple[int, int] = (round(cell_side * x_index + cell_side / 2),
+                                            round(cell_side * y_index + cell_side / 2))
+            cell_background_pixel: tuple[int, int] = (x + 15, y + 15)
+            cell_star_test_pixel: tuple[int, int] = (cell_centre[0], round(cell_centre[1] + cell_side / 7))
+
+            row_cell_centres.append(cell_centre)
+            row_test_pixels.append(cell_background_pixel)
+
+            background_colour: list[int] = [int(colour) for colour in
+                                            no_border[cell_background_pixel[0], cell_background_pixel[1]]]
+            centre_colour: list[int] = [int(colour) for colour in no_border[cell_centre[0], cell_centre[1]]]
+            star_test_colour: list[int] = [int(colour) for colour in
+                                           no_border[cell_star_test_pixel[0], cell_star_test_pixel[1]]]
+
+            if background_colour not in cell_colours:
+                cell_colours.append(background_colour)
+
+            cell_object = s.Cell(s.Coordinate(x_index, y_index))
+
+            if centre_colour == dot_star_colour:
+                cell_object.status = s.CellStatus.dot
+            else:
+                if star_test_colour != background_colour:
+                    cell_object.status = s.CellStatus.star
+                elif centre_colour == background_colour:
+                    cell_object.status = s.CellStatus.blank
+                else:
+                    print(f'\n!! Cell status could not be identified for cell at ({x_index}, {y_index}).\n'
+                          f'\t- Centre pixel: {cell_centre}\n'
+                          f'\t- Background colour: {background_colour}\n'
+                          f'\t- Centre colour: {centre_colour} (== dot_star_colour? {centre_colour == dot_star_colour})\n'
+                          f'\t- Star test colour: {star_test_colour} !!')
+
+            row_cells.append(cell_object)
+
+        cell_centres.append(row_cell_centres)
         test_pixels.append(row_test_pixels)
+        cells.append(row_cells)
 
-        for pixel in row_test_pixels:
-            colour_at_pixel = [int(colour) for colour in no_border[pixel[0], pixel[1]]]
-            if colour_at_pixel not in cell_colours:
-                cell_colours.append(colour_at_pixel)
-            print(f'\t- At {pixel}: {colour_at_pixel}')
-
-    print(f'\n{cell_colours = }')
-    print(f'num colours: {len(cell_colours)}')
-
-    cells: np.ndarray = np.empty((9, 9), dtype=s.Cell)
-    for y in range(9):
-        cells[y] = [s.Cell(s.Coordinate(x, y)) for x in range(9)]
+    print()
+    for i in range(9):
+        print(f'Row {i}: {[cell.status.name for cell in cells[i]]}')
 
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
@@ -160,7 +203,7 @@ def ingest(image_path: str) -> s.Board:
 
     edges: np.ndarray = cropped_board(original)
 
-    cv2.imshow('Board', resize_with_aspect_ratio(edges, height=600))
+    # cv2.imshow('Board', resize_with_aspect_ratio(edges, height=600))
 
     b: s.Board = board_from_image(edges)
 
