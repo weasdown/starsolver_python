@@ -156,7 +156,8 @@ def board_from_image(board_image: np.ndarray) -> s.Board:
             if background_colour not in cell_colours:
                 cell_colours.append(background_colour)
 
-            cell_object = s.Cell(s.Coordinate(x_index, y_index))
+            cell_object = s.Cell(s.Coordinate(x_index, y_index),
+                                 rgb_colour=(background_colour[2], background_colour[1], background_colour[0]))
 
             if centre_colour == dot_star_colour:
                 cell_object.status = s.CellStatus.dot
@@ -177,10 +178,6 @@ def board_from_image(board_image: np.ndarray) -> s.Board:
         cell_centres.append(row_cell_centres)
         test_pixels.append(row_test_pixels)
         cells.append(row_cells)
-
-    print()
-    for i in range(9):
-        print(f'Row {i}: {[cell.status.name for cell in cells[i]]}')
 
     # TODO add splitting of board image in a pixel group for each cell, then convert these to Cells. Then build Shapes. Then build Board.
 
