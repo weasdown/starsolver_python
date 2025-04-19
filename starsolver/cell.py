@@ -49,6 +49,9 @@ class Cell:
 
         self.status: CellStatus = status
 
+        # Probability that the cell is a star
+        self.p_star: float = 2 / 9  # FIXME change hardcoded value to one calculated as ns/n^2, where n is the number of rows in the board and s is the number of stars in a row/column etc.
+
     def __repr__(self) -> str:
         return f'Cell{self.coord}'
 
