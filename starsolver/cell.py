@@ -49,8 +49,11 @@ class Cell:
 
         self.status: CellStatus = status
 
-        # Probability that the cell is a star
+        # Probability that the cell is a star once the puzzle is completed.
         self.p_star: float = 2 / 9  # FIXME change hardcoded value to one calculated as ns/n^2, where n is the number of rows in the board and s is the number of stars in a row/column etc.
+
+        # Probability that the cell is a dot once the puzzle is completed.
+        self.p_dot: float = 1 - self.p_star
 
     def __repr__(self) -> str:
         return f'Cell{self.coord}'
